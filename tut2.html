@@ -490,6 +490,14 @@ cout << x.load(relaxed);          // (z)
             <img data-src="43.png" width="600px"/>
             <br/>
             <body>
+            Follow up question: if (x) prints 5, what can (z) print?
+            </body>
+        </section>
+        <section>
+            <h2>Memory Ordering Quiz 4.3</h2>
+            <img data-src="43.png" width="600px"/>
+            <br/>
+            <body>
 
             What happens if X is not atomic?
             <p class="fragment fade-in-then-semi-out"><b>data race, try to find the pair yourself >:)</b></p>
@@ -515,6 +523,67 @@ cout << x.load(relaxed);          // (z)
                     https://forms.gle/NRR18MPnsE1fnu4fA
                 </aside>
             </script>
+        </section>
+        <section>
+            <h2>Extra Quizzes! Thanks, Grace! <a href="https://gracefu.neocities.org/cpp-atomic-puzzles-1"><br/>full puzzles</a></h2>
+        </section>
+        <section>
+            <h2>Extra Quiz Puzzle 1</h2>
+            <pre>
+            <code class="hljs language-cpp" data-line-numbers>
+                <script type="text/template">int main() {
+  atomic_int x{0}; atomic_int y{0};
+  int read_x = 0;  int read_y = 0;
+
+  thread t1{[&]() {
+    read_x = x.load(acquire); // RX
+    y.store(1, release);      // SY
+  }};
+  thread t2{[&]() {
+    read_y = y.load(acquire); // RY
+    x.store(1, release);      // SX
+  }};
+  t1.join(); t2.join();
+
+  return read_x + read_y;
+}
+                </script>
+            </code>
+            </pre>
+            <body>
+
+            What are the returns value of main?
+            <p class="fragment fade-in-then-semi-out"><b>0 or 1 (not 2, why?)</b></p>
+            </body>
+        </section>
+        <section>
+            <h2>Extra Quiz Puzzle 4</h2>
+            <pre>
+            <code class="hljs language-cpp" data-line-numbers>
+                <script type="text/template">int main() {
+    atomic_int x{0}; atomic_int y{0};
+    int read_x = 0;  int read_y = 0;
+
+    thread t1{[&]() {
+        read_x = x.load(relaxed); // RX
+        y.store(1, release);      // SY
+    }};
+    thread t2{[&]() {
+        read_y = y.load(relaxed); // RY
+        x.store(1, release);      // SX
+    }};
+    t1.join(); t2.join();
+
+    return read_x + read_y;
+}
+                </script>
+            </code>
+            </pre>
+            <body>
+
+            What are the returns value of main?
+            <p class="fragment fade-in-then-semi-out"><b>0,1, or 2 (how? time travel?)</b></p>
+            </body>
         </section>
         <!--@formatter:on-->
     </div>
