@@ -221,10 +221,10 @@
                 ```c++ [1: 2-3|5-6]
                 // atomic int x;
                 // Thread 1:
-                x.store(1, std::memory_order_release); // A
+                x.store(1, std::memory_order_release);
 
                 // Thread 2:
-                r2 = x.load(std::memory_order_acquire); // B
+                r2 = x.load(std::memory_order_acquire);
                 ```
                 <br/>
                 <p class="fragment fade-in"><b>Not necessarily, in general No</b></p>
@@ -235,10 +235,10 @@
                 ```c++ [1: 2-3|5-6]
                 // atomic int x; Assume there are only 2 threads
                 // Thread 1:
-                x.store(1, std::memory_order_release); // A
+                x.store(1, std::memory_order_release);
 
                 // Thread 2:
-                while (x.load(std::memory_order_acquire) != 1) {}; // B
+                while (x.load(std::memory_order_acquire) != 1) {};
                 ```
 
                 <p class="fragment fade-in"><b>Yes</b></p>
@@ -254,12 +254,12 @@
                 ```c++ [1: |3-4|4-7|7-8]
                 // atomic int x, y; Assume there are only 2 threads
                 // Thread 1:
-                y = 1; // A
-                x.store(1, std::memory_order_release); // B
+                y = 1;
+                x.store(1, std::memory_order_release);
 
                 // Thread 2:
-                while (x.load(std::memory_order_acquire) != 1) {}; // C
-                std::cout << y; // D
+                while (x.load(std::memory_order_acquire) != 1) {};
+                std::cout << y;
                 ```
 
                 How do you prove that A (L3) happens before D (L8)?
@@ -272,12 +272,12 @@
                 ```c++ [1: |]
                 // atomic int x, y; Assume there are only 2 threads
                 // Thread 1:
-                y = 1; // A
-                x.store(1, std::memory_order_release); // B
+                y = 1;
+                x.store(1, std::memory_order_release);
 
                 // Thread 2:
-                while (x.load(std::memory_order_acquire) != 1) {}; // C
-                std::cout << y; // D
+                while (x.load(std::memory_order_acquire) != 1) {};
+                std::cout << y;
                 ```
 
                 What are the side effects that D can observe?
@@ -342,8 +342,8 @@ x.store(9, relaxed);
                     <pre>
                     <code class="hljs language-cpp" data-line-numbers="|3">
                         <script type="text/template">// Thread 1
-x.store(1, relaxed);  // (a)
-y.store(2, release);  // (b)
+x.store(1, relaxed);
+y.store(2, release);
                         </script>
                     </code>
                     </pre>
@@ -352,8 +352,8 @@ y.store(2, release);  // (b)
                               <pre>
                     <code class="hljs language-cpp" data-line-numbers="|2">
                         <script type="text/template">// Thread 2
-while (y.load(acquire) != 2) { }  // (x)
-cout << x.load(relaxed);          // (y)
+while (y.load(acquire) != 2) { }
+cout << x.load(relaxed);
                         </script>
                     </code>
                     </pre>
@@ -377,11 +377,11 @@ cout << x.load(relaxed);          // (y)
                     <pre>
                     <code class="hljs language-cpp" data-line-numbers>
                         <script type="text/template">// Thread 1
-x.store(1, stdmo::relaxed);  // (a)
-y.store(2, stdmo::release);  // (b)
-x.store(3, stdmo::relaxed);  // (c)
-z.store(4, stdmo::release);  // (d)
-x.store(5, stdmo::relaxed);  // (e)
+x.store(1, stdmo::relaxed);
+y.store(2, stdmo::release);
+x.store(3, stdmo::relaxed);
+z.store(4, stdmo::release);
+x.store(5, stdmo::relaxed);
                         </script>
                     </code>
                     </pre>
@@ -390,10 +390,10 @@ x.store(5, stdmo::relaxed);  // (e)
                               <pre>
                     <code class="hljs language-cpp" data-line-numbers>
                         <script type="text/template">// Thread 2
-while (y.load(stdmo::acquire) != 2) { }  // (p)
-cout << x.load(stdmo::relaxed);          // (q)
-while (z.load(stdmo::acquire) != 4) { }  // (r)
-cout << x.load(stdmo::relaxed);          // (s)
+while (y.load(stdmo::acquire) != 2) { }
+cout << x.load(stdmo::relaxed);
+while (z.load(stdmo::acquire) != 4) { }
+cout << x.load(stdmo::relaxed);
                         </script>
                     </code>
                     </pre>
@@ -436,8 +436,8 @@ cout << x.load(stdmo::relaxed);          // (s)
                     <pre>
                     <code class="hljs language-cpp" data-line-numbers>
                         <script type="text/template">// Thread 1
-x.store(1, relaxed);  // (a)
-y.store(2, release);  // (b)
+x.store(1, relaxed);
+y.store(2, release);
                         </script>
                     </code>
                     </pre>
@@ -446,9 +446,9 @@ y.store(2, release);  // (b)
                               <pre>
                     <code class="hljs language-cpp" data-line-numbers>
                         <script type="text/template">// Thread 2
-x.store(3, relaxed);  // (p)
-z.store(4, release);  // (q)
-x.store(5, relaxed);  // (r)
+x.store(3, relaxed);
+z.store(4, release);
+x.store(5, relaxed);
                         </script>
                     </code>
                     </pre>
@@ -458,10 +458,10 @@ x.store(5, relaxed);  // (r)
                               <pre>
                     <code class="hljs language-cpp" data-line-numbers>
                         <script type="text/template">// Thread 3
-while (y.load(acquire) != 2) { }  // (w)
-cout << x.load(relaxed);          // (x)
-while (z.load(acquire) != 4) { }  // (y)
-cout << x.load(relaxed);          // (z)
+while (y.load(acquire) != 2) { }
+cout << x.load(relaxed);
+while (z.load(acquire) != 4) { }
+cout << x.load(relaxed);
                         </script>
                     </code>
                     </pre>
@@ -536,12 +536,12 @@ cout << x.load(relaxed);          // (z)
   int read_x = 0;  int read_y = 0;
 
   thread t1{[&]() {
-    read_x = x.load(acquire); // RX
-    y.store(1, release);      // SY
+    read_x = x.load(acquire);
+    y.store(1, release);
   }};
   thread t2{[&]() {
-    read_y = y.load(acquire); // RY
-    x.store(1, release);      // SX
+    read_y = y.load(acquire);
+    x.store(1, release);
   }};
   t1.join(); t2.join();
 
@@ -565,12 +565,12 @@ cout << x.load(relaxed);          // (z)
     int read_x = 0;  int read_y = 0;
 
     thread t1{[&]() {
-        read_x = x.load(relaxed); // RX
-        y.store(1, release);      // SY
+        read_x = x.load(relaxed);
+        y.store(1, release);
     }};
     thread t2{[&]() {
-        read_y = y.load(relaxed); // RY
-        x.store(1, release);      // SX
+        read_y = y.load(relaxed);
+        x.store(1, release);
     }};
     t1.join(); t2.join();
 
